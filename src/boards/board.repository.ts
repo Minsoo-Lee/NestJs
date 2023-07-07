@@ -1,6 +1,6 @@
-import { Board } from './board-status.enum';
-import { Repository } from "typeorm";
+import { Board } from './board.entity';
+import { EntityRepository, Repository } from "typeorm";
 
+@EntityRepository(Board)
 export class BoardRepository extends Repository<Board> {
-    
 }
