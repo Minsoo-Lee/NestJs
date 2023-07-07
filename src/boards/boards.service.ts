@@ -27,4 +27,8 @@ export class BoardsService {
     updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
         return this.boardRepository.updateBoardStatus(id, status);
     }
+
+    getAllBoards(): Promise <Board[]> {
+        return this.boardRepository.getAllBoards();
+    }
 }

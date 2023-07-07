@@ -46,4 +46,8 @@ export class BoardRepository extends Repository<Board> {
 
         return board;
     }
+
+    async getAllBoards(): Promise <Board[]> {
+        return this.find();
+    }
 }
