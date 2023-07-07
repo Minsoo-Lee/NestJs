@@ -23,4 +23,8 @@ export class BoardsService {
     deleteBoard(id: number): Promise<void> {
         return this.boardRepository.deleteBoard(id);
     }
+
+    updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
+        return this.boardRepository.updateBoardStatus(id, status);
+    }
 }
