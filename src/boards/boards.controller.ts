@@ -13,7 +13,13 @@ export class BoardsController {
     getBoardById(@Param('id') id:number): Promise <Board> {
         return this.boardsService.getBoardById(id);
     }
-    
+
+    @Post()
+    @UsePipes(ValidationPipe)
+    createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
+        return this.boardsService.createBoard(createBoardDto);
+    }
+
     // @Get('/')
     // getAllBoard() {
     //     return this.boardsService.getAllBoards();

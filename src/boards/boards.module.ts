@@ -1,3 +1,4 @@
+import { Board } from './board.entity';
 import { BoardRepository } from './board.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
