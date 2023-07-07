@@ -12,17 +12,15 @@ export class BoardsService {
         private boardRepository: BoardRepository,
     ) { }
 
+    getBoardById(id: number): Promise<Board> {
+        return this.boardRepository.getBoardById(id);
+    }
+
     createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
         return this.boardRepository.createBoard(createBoardDto);
     }
 
-    async getBoardById(id: number): Promise<Board> {
-        const found = await this.boardRepository.findOne(id);
-
-        if (!found) {
-            throw new NotFoundException(`Can't find Board with id ${id}`);
-        }
-
-        return found;
+    deleteBoard(id: number): Promise<void> {
+        return this.boardRepository.deleteBoard(id);
     }
 }
