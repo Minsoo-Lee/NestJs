@@ -1,3 +1,6 @@
+import { User } from './user.entity';
+import { GetUser } from './get-user.decorator';
+import { createParamDecorator } from '@nestjs/common';
 import { AuthCredentialDto } from './dto/auth-credential';
 import { AuthService } from './auth.service';
 import { Body, Controller, Post, Req, UseGuards, ValidationPipe } from '@nestjs/common';
@@ -19,7 +22,7 @@ export class AuthController {
 
     @Post('/test')
     @UseGuards(AuthGuard())
-    test(@Req() req) {
-        console.log('req', req);
+    test(@GetUser() user: User) {
+        console.log('user', user);
     }
 }
