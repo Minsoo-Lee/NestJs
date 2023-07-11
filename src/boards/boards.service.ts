@@ -29,7 +29,7 @@ export class BoardsService {
         return this.boardRepository.updateBoardStatus(id, status);
     }
 
-    getAllBoards(): Promise <Board[]> {
-        return this.boardRepository.getAllBoards();
+    getAllBoards(user: User): Promise <Board[]> {
+        return this.boardRepository.getAllBoards(user);
     }
 }
