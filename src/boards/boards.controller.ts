@@ -1,6 +1,6 @@
 import { AuthGuard } from '@nestjs/passport';
 import { BoardsService } from './boards.service';
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes, ValidationPipe, Logger } from '@nestjs/common';
 import { BoardStatus } from './board-status.enum';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe';
@@ -11,6 +11,7 @@ import { User } from 'src/auth/user.entity';
 @Controller('boards')
 @UseGuards(AuthGuard())
 export class BoardsController {
+    private logger = new Logger('BoardsController');
     constructor(private boardsService: BoardsService) {}
 
     @Get('/:id')
@@ -24,6 +25,8 @@ export class BoardsController {
         @Body() createBoardDto: CreateBoardDto,
         @GetUser() user: User
     ): Promise<Board> {
+        this.logger.verbose(`User ${user.username} createing a new board. 
+            Payload: ${JSON.stringify(createBoardDto)}`);
         return this.boardsService.createBoard(createBoardDto, user);
     }
 
@@ -47,6 +50,7 @@ export class BoardsController {
     getAllBoard(
         @GetUser() user: User
     ): Promise<Board[]> {
+        this.logger.verbose(`User ${user.username} trying to get all boards`);
         return this.boardsService.getAllBoards(user);
     }
 }
