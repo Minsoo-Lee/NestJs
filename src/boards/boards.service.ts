@@ -21,8 +21,8 @@ export class BoardsService {
         return this.boardRepository.createBoard(createBoardDto, user);
     }
 
-    deleteBoard(id: number): Promise<void> {
-        return this.boardRepository.deleteBoard(id);
+    deleteBoard(id: number, user: User): Promise<void> {
+        return this.boardRepository.deleteBoard(id, user);
     }
 
     updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
