@@ -6,14 +6,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppService = void 0;
+exports.BoardsService = void 0;
 const common_1 = require("@nestjs/common");
-let AppService = exports.AppService = class AppService {
-    getHello() {
-        return 'Hello World!';
+const board_model_1 = require("./board.model");
+const uuid_1 = require("uuid");
+let BoardsService = exports.BoardsService = class BoardsService {
+    constructor() {
+        this.boards = [];
+    }
+    getAllBoards() {
+        return this.boards;
+    }
+    createBoard(title, description) {
+        const board = {
+            id: (0, uuid_1.v1)(),
+            title,
+            description,
+            status: board_model_1.BoardStatus.PUBLIC
+        };
+        this.boards.push(board);
+        return board;
     }
 };
-exports.AppService = AppService = __decorate([
+exports.BoardsService = BoardsService = __decorate([
     (0, common_1.Injectable)()
-], AppService);
-//# sourceMappingURL=app.service.js.map
+], BoardsService);
+//# sourceMappingURL=boards.service.js.map
