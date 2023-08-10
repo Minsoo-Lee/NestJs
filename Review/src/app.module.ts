@@ -10,7 +10,7 @@ import {typeORMConfig} from "./configs/typeorm.config";
       TypeOrmModule.forRoot(typeORMConfig),
       BoardsModule
   ],
-  controllers: [BoardsController],
-  providers: [BoardsService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
