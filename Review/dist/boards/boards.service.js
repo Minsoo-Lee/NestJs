@@ -12,22 +12,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BoardsService = void 0;
 const common_1 = require("@nestjs/common");
 const board_repository_1 = require("./board.repository");
+const user_repository_1 = require("../auth/user.repository");
 let BoardsService = exports.BoardsService = class BoardsService {
-    constructor(boardRepository) {
+    constructor(boardRepository, userRepository) {
         this.boardRepository = boardRepository;
+        this.userRepository = userRepository;
     }
-    createBoard(createBoardDto) {
-        return this.boardRepository.createBoard(createBoardDto);
+    async createBoard(createBoardDto, user) {
+        const userData = await this.userRepository.findOneBy({ username: user.username });
+        return this.boardRepository.createBoard(createBoardDto, userData);
     }
     async getBoardById(id) {
         const found = await this.boardRepository.findOneBy({ id });
         if (!found) {
-            throw new common_1.NotFoundException(`Cant't find Board with id ${id}`);
+            throw new common_1.NotFoundException(`Can't find Board with id ${id}`);
         }
         return found;
     }
-    async deleteBoard(id) {
-        const result = await this.boardRepository.delete({ id });
+    async deleteBoard(id, user) {
+        const userData = await this.userRepository.findOneBy({ username: user.username });
+        const result = await this.boardRepository.delete({
+            id,
+            user: {
+                id: userData.id
+            }
+        });
         if (result.affected === 0) {
             throw new common_1.NotFoundException(`Can't find Board with id ${id}`);
         }
@@ -39,12 +48,16 @@ let BoardsService = exports.BoardsService = class BoardsService {
         await this.boardRepository.save(board);
         return board;
     }
-    async getAllBoards() {
-        return await this.boardRepository.find();
+    async getAllBoards(user) {
+        const userData = await this.userRepository.findOneBy({ username: user.username });
+        const query = this.boardRepository.createQueryBuilder('board');
+        query.where('board.userId = :userId', { userId: userData.id });
+        return await query.getMany();
     }
 };
 exports.BoardsService = BoardsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [board_repository_1.BoardRepository])
+    __metadata("design:paramtypes", [board_repository_1.BoardRepository,
+        user_repository_1.UserRepository])
 ], BoardsService);
 //# sourceMappingURL=boards.service.js.map

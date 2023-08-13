@@ -1,33 +1,41 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {BoardStatus} from "./board-status.enum";
-import { v1 as uuid } from 'uuid';
 import {CreateBoardDto} from "./dto/create-board.dto";
 import {BoardRepository} from "./board.repository";
-import {InjectRepository} from "@nestjs/typeorm";
 import {Board} from "./board.entity";
+import {User} from "../auth/user.entity";
+import {UserRepository} from "../auth/user.repository";
 
 @Injectable()
 export class BoardsService {
     constructor(
         private boardRepository: BoardRepository,
+        private userRepository: UserRepository
     ) {
     }
 
-    createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
-        return this.boardRepository.createBoard(createBoardDto);
+    async createBoard(createBoardDto: CreateBoardDto, user: User): Promise<Board> {
+        const userData = await this.userRepository.findOneBy({ username: user.username });
+        return this.boardRepository.createBoard(createBoardDto, userData);
     }
 
     async getBoardById(id: number): Promise<Board> {
         const found = await this.boardRepository.findOneBy({ id });
 
         if (!found) {
-            throw new NotFoundException(`Cant't find Board with id ${id}`);
+            throw new NotFoundException(`Can't find Board with id ${id}`);
         }
         return found;
     }
 
-    async deleteBoard(id: number): Promise<void> {
-        const result = await this.boardRepository.delete({ id });
+    async deleteBoard(id: number, user: User): Promise<void> {
+        const userData = await this.userRepository.findOneBy({ username: user.username });
+        const result = await this.boardRepository.delete({
+            id,
+            user: {
+                id: userData.id
+            }
+        });
 
         if (result.affected === 0) {
             throw new NotFoundException(`Can't find Board with id ${id}`);
@@ -45,8 +53,11 @@ export class BoardsService {
         return board;
     }
 
-    async getAllBoards(): Promise<Board[]> {
-        return await this.boardRepository.find();
+    async getAllBoards(user: User): Promise<Board[]> {
+        const userData = await this.userRepository.findOneBy({ username: user.username });
+        const query = this.boardRepository.createQueryBuilder('board');
+        query.where('board.userId = :userId', { userId: userData.id });
+        return await query.getMany();
     }
 
     // getAllBoards(): Board[] {

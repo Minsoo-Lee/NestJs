@@ -2,11 +2,11 @@ import {
     Body,
     Controller,
     Delete,
-    Get,
+    Get, Logger,
     Param,
     ParseIntPipe,
     Patch,
-    Post,
+    Post, UseGuards,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
@@ -15,9 +15,14 @@ import {BoardStatus} from "./board-status.enum";
 import {CreateBoardDto} from "./dto/create-board.dto";
 import {BoardStatusValidationPipe} from "./pipes/board-status-validation.pipe";
 import {Board} from "./board.entity";
+import {AuthGuard} from "../auth/auth.guard";
+import {GetUser} from "../auth/get-user.decorator";
+import {User} from "../auth/user.entity";
 
 @Controller('boards')
+@UseGuards(AuthGuard)
 export class BoardsController {
+    private logger = new Logger('Boards');
     constructor(
         private boardsService: BoardsService
     ) {
@@ -25,8 +30,9 @@ export class BoardsController {
 
     @Post()
     @UsePipes(ValidationPipe)
-    createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
-        return this.boardsService.createBoard(createBoardDto);
+    createBoard(@Body() createBoardDto: CreateBoardDto,
+                @GetUser() user: User): Promise<Board> {
+        return this.boardsService.createBoard(createBoardDto, user);
     }
 
     @Get('/:id')
@@ -35,8 +41,9 @@ export class BoardsController {
     }
 
     @Delete('/:id')
-    deleteBoard(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        return this.boardsService.deleteBoard(id);
+    deleteBoard(@Param('id', ParseIntPipe) id: number,
+                @GetUser() user: User): Promise<void> {
+        return this.boardsService.deleteBoard(id, user);
     }
 
     @Patch('/:id/status')
@@ -48,8 +55,11 @@ export class BoardsController {
     }
 
     @Get()
-    getAllBoards(): Promise<Board[]> {
-        return this.boardsService.getAllBoards();
+    getAllBoards(
+        @GetUser() user: User
+    ): Promise<Board[]> {
+        this.logger.verbose(`User "${user.username}" retrieving all boards`)
+        return this.boardsService.getAllBoards(user);
     }
 
     // constructor(private boardService: BoardsService) {

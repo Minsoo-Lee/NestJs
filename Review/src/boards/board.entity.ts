@@ -1,5 +1,7 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {BoardStatus} from "./board-status.enum";
+import {User} from "../auth/user.entity";
+import {JoinColumn} from "typeorm/browser";
 
 @Entity()
 export class Board extends BaseEntity {
@@ -15,4 +17,7 @@ export class Board extends BaseEntity {
 
     @Column()
     status: BoardStatus;
+
+    @ManyToOne(type => User, user => user.board, {eager: false})
+    user: User;
 }

@@ -13,15 +13,21 @@ const boards_service_1 = require("./boards.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const board_repository_1 = require("./board.repository");
 const board_entity_1 = require("./board.entity");
+const jwt_1 = require("@nestjs/jwt");
+const auth_module_1 = require("../auth/auth.module");
+const user_repository_1 = require("../auth/user.repository");
+const user_entity_1 = require("../auth/user.entity");
 let BoardsModule = exports.BoardsModule = class BoardsModule {
 };
 exports.BoardsModule = BoardsModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([board_entity_1.Board])
+            auth_module_1.AuthModule,
+            typeorm_1.TypeOrmModule.forFeature([board_entity_1.Board]),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User])
         ],
         controllers: [boards_controller_1.BoardsController],
-        providers: [boards_service_1.BoardsService, board_repository_1.BoardRepository]
+        providers: [boards_service_1.BoardsService, board_repository_1.BoardRepository, user_repository_1.UserRepository, jwt_1.JwtService]
     })
 ], BoardsModule);
 //# sourceMappingURL=boards.module.js.map
