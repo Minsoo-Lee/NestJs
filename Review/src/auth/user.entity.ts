@@ -1,6 +1,5 @@
 import {BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique} from "typeorm";
 import {Board} from "../boards/board.entity";
-import {JoinColumn} from "typeorm/browser";
 
 @Entity()
 @Unique(['username'])
