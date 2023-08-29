@@ -5,46 +5,46 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BoardsService = void 0;
 const common_1 = require("@nestjs/common");
-const board_model_1 = require("./board.model");
-const uuid_1 = require("uuid");
+const board_repository_1 = require("./board.repository");
 let BoardsService = exports.BoardsService = class BoardsService {
-    constructor() {
-        this.boards = [];
-    }
-    getAllBoards() {
-        return this.boards;
+    constructor(boardRepository) {
+        this.boardRepository = boardRepository;
     }
     createBoard(createBoardDto) {
-        const { title, description } = createBoardDto;
-        const board = {
-            id: (0, uuid_1.v1)(),
-            title,
-            description,
-            status: board_model_1.BoardStatus.PUBLIC
-        };
-        this.boards.push(board);
-        return board;
+        return this.boardRepository.createBoard(createBoardDto);
     }
-    getBoardById(id) {
-        const found = this.boards.find((board) => board.id === id);
-        if (!found)
+    async getBoardById(id) {
+        const found = await this.boardRepository.findOneBy({ id });
+        if (!found) {
             throw new common_1.NotFoundException(`Can't find Board with id ${id}`);
+        }
         return found;
     }
-    deleteBoard(id) {
-        const found = this.getBoardById(id);
-        this.boards = this.boards.filter((board) => board.id !== found.id);
+    async deleteBoard(id) {
+        const result = await this.boardRepository.delete(id);
+        if (result.affected === 0) {
+            throw new common_1.NotFoundException(`Can't find Board with id ${id}`);
+        }
+        console.log('result', result);
     }
-    updateBoardStatus(id, status) {
-        const board = this.getBoardById(id);
+    async updateBoardStatus(id, status) {
+        const board = await this.getBoardById(id);
         board.status = status;
+        await this.boardRepository.save(board);
         return board;
+    }
+    async getAllBoards() {
+        return this.boardRepository.find();
     }
 };
 exports.BoardsService = BoardsService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [board_repository_1.BoardRepository])
 ], BoardsService);
 //# sourceMappingURL=boards.service.js.map

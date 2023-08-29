@@ -1,6 +1,7 @@
-import {TypeOrmModuleOptions} from "@nestjs/typeorm";
-
-export const typeormConfig : TypeOrmModuleOptions = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.typeORMConfig = void 0;
+exports.typeORMConfig = {
     type: 'postgres',
     host: 'localhost',
     port: 5432,
@@ -9,4 +10,5 @@ export const typeormConfig : TypeOrmModuleOptions = {
     database: 'board-app',
     entities: [__dirname + '/../**/*.entity.{js,ts}'],
     synchronize: true
-}
+};
+//# sourceMappingURL=typeORMConfig.js.map

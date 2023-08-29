@@ -16,10 +16,21 @@ exports.BoardRepository = void 0;
 const typeorm_1 = require("typeorm");
 const board_entity_1 = require("./board.entity");
 const typeorm_2 = require("@nestjs/typeorm");
+const board_status_enum_1 = require("./board-status.enum");
 let BoardRepository = exports.BoardRepository = class BoardRepository extends typeorm_1.Repository {
     constructor(dataSource) {
         super(board_entity_1.Board, dataSource.manager);
         this.dataSource = dataSource;
+    }
+    async createBoard(createBoardDto) {
+        const { title, description } = createBoardDto;
+        const board = this.create({
+            title,
+            description,
+            status: board_status_enum_1.BoardStatus.PUBLIC
+        });
+        await this.save(board);
+        return board;
     }
 };
 exports.BoardRepository = BoardRepository = __decorate([

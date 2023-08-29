@@ -11,10 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Board = void 0;
 const typeorm_1 = require("typeorm");
-const board_model_1 = require("./board.model");
-class Board extends typeorm_1.BaseEntity {
-}
-exports.Board = Board;
+const board_status_enum_1 = require("./board-status.enum");
+let Board = exports.Board = class Board extends typeorm_1.BaseEntity {
+};
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
@@ -31,4 +30,7 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Board.prototype, "status", void 0);
+exports.Board = Board = __decorate([
+    (0, typeorm_1.Entity)()
+], Board);
 //# sourceMappingURL=board.entity.js.map
